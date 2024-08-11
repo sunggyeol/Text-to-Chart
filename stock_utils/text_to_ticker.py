@@ -12,19 +12,20 @@ client = openai.OpenAI(api_key=os.getenv('OPENAI_API_KEY'))
 def text_to_ticker(query):
     # Define the prompt to guide the model
     prompt = (
-        f"Extract a single stock ticker from the following query: '{query}'. "
-        "The ticker can be a US stock ticker (1-5 uppercase letters) or a Korean stock ticker (e.g., numeric code or alphanumeric). "
-        "If a ticker is explicitly mentioned, return that ticker. If no ticker is mentioned, provide the ticker of the most relevant company associated with the query. "
-        "For example, if the query is about smartphones, you might return Apple (AAPL) if no other ticker is mentioned. "
-        "If the query is about refrigerators, you might return Samsung (005930) or LG (066570). "
-        "If there are multiple relevant tickers, provide only one ticker."
+        f"Identify and extract a single US stock ticker from the given query: '{query}'. "
+        "A US stock ticker consists of 1-5 uppercase letters (e.g., 'AAPL'). "
+        "If a specific ticker is explicitly mentioned in the query, return that ticker. "
+        "If no explicit ticker is mentioned, determine the most relevant company related to the query's context. "
+        "For example, if the query involves smartphones, return 'AAPL' for Apple if no other ticker is specified. "
+        "Ensure that a ticker is identified and returned even if it is not directly mentioned in the query. "
+        "The output should be a single ticker in the format 'AAPL'."
     )
-
+    
     # Call the OpenAI API
     response = client.chat.completions.create(
         model="gpt-4o-mini",
         messages=[
-            {"role": "system", "content": "You are a helpful assistant."},
+            {"role": "system", "content": "You are a stock ticker extraction model."},
             {"role": "user", "content": prompt}
         ],
         max_tokens=15
